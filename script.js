@@ -58,6 +58,54 @@ let videoObjectUrl = null;
 let facecamObjectUrl = null;
 const facecamInput = document.getElementById("facecam-file");
 const facecamVideo = document.getElementById("facecam-video");
+const autoFindBtn=document.getElementById("auto-find-btn");
+const captionsToggle=document.getElementById("hinglish-captions");
+let whisperPipeline=null, captionChunks=[];
+function romanizeHindi(input){
+ const m={"अ":"a","आ":"aa","इ":"i","ई":"ee","उ":"u","ऊ":"oo","ए":"e","ऐ":"ai","ओ":"o","औ":"au","क":"k","ख":"kh","ग":"g","घ":"gh","ङ":"ng","च":"ch","छ":"chh","ज":"j","झ":"jh","ञ":"ny","ट":"t","ठ":"th","ड":"d","ढ":"dh","ण":"n","त":"t","थ":"th","द":"d","ध":"dh","न":"n","प":"p","फ":"ph","ब":"b","भ":"bh","म":"m","य":"y","र":"r","ल":"l","व":"v","श":"sh","ष":"sh","स":"s","ह":"h","ा":"aa","ि":"i","ी":"ee","ु":"u","ू":"oo","े":"e","ै":"ai","ो":"o","ौ":"au","ं":"n","ँ":"n","ः":"h","्":"","़":""};
+ const cons=new Set("कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह".split(""));
+ const a=[...String(input)];let out="";
+ for(let i=0;i<a.length;i++){let c=a[i],n=a[i+1];if(cons.has(c)){out+=m[c];if(n==="्"){i++;continue;}if(n&&["ा","ि","ी","ु","ू","े","ै","ो","ौ","ं","ँ","ः","़"].includes(n)){out+=m[n]||"";i++;}else out+="a";}else out+=m[c]??c;}
+ return out.replace(/\s+/g," ").trim();
+}
+async function getWhisper(){
+ if(whisperPipeline)return whisperPipeline;
+ renderStatus.textContent="Loading free Hindi speech model… first use downloads it.";
+ const {pipeline,env}=await import("https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2");
+ env.allowLocalModels=false;env.useBrowserCache=true;
+ whisperPipeline=await pipeline("automatic-speech-recognition","Xenova/whisper-tiny");
+ return whisperPipeline;
+}
+async function getClipAudio(start,end){
+ const file=fileInput.files&&fileInput.files[0];if(!file)throw new Error("Choose a video first.");
+ const AC=window.AudioContext||window.webkitAudioContext,ac=new AC();
+ try{
+  const decoded=await ac.decodeAudioData(await file.arrayBuffer()),rate=decoded.sampleRate;
+  const from=Math.floor(start*rate),to=Math.min(decoded.length,Math.floor(end*rate)),len=to-from;
+  if(len<=0)throw new Error("No audio in this section.");
+  const mono=new Float32Array(len);
+  for(let c=0;c<decoded.numberOfChannels;c++){const d=decoded.getChannelData(c);for(let i=0;i<len;i++)mono[i]+=d[from+i]/decoded.numberOfChannels;}
+  const out=new Float32Array(Math.floor(len*16000/rate));
+  for(let i=0;i<out.length;i++){const p=i*rate/16000,l=Math.floor(p),f=p-l;out[i]=mono[l]*(1-f)+(mono[Math.min(l+1,len-1)]||0)*f;}
+  return out;
+ }finally{await ac.close();}
+}
+autoFindBtn.addEventListener("click",async()=>{
+ autoFindBtn.disabled=true;
+ try{
+  const audio=await getClipAudio(0,sourceVideo.duration),win=16000,count=Math.floor(audio.length/win);
+  if(count<5)throw new Error("Video is too short for auto moment detection.");
+  const levels=[];for(let w=0;w<count;w++){let sum=0;for(let i=w*win;i<(w+1)*win;i++)sum+=audio[i]*audio[i];levels.push(Math.sqrt(sum/win));}
+  const seconds=Math.min(30,Math.max(8,Math.floor(audio.length/16000))),span=Math.min(count,seconds);let best=0,score=-1;
+  for(let s=0;s<=count-span;s++){let v=0;for(let j=s;j<s+span;j++)v+=levels[j];if(v>score){score=v;best=s;}}
+  document.getElementById("clip-start").value=best.toFixed(1);
+  document.getElementById("clip-end").value=Math.min(sourceVideo.duration,best+seconds).toFixed(1);
+  sourceVideo.currentTime=best;
+  renderStatus.textContent="An energetic section is selected. Preview it, then create your Short.";
+ }catch(e){renderStatus.textContent=e.message||"Auto moment detection failed. Set the times manually.";}
+ finally{autoFindBtn.disabled=false;}
+});
+
 facecamInput.addEventListener("change", () => {
   const file = facecamInput.files && facecamInput.files[0];
   if (!file) return;
@@ -102,6 +150,8 @@ renderBtn.addEventListener("click", async () => {
   renderBtn.disabled = true;
   downloadLink.hidden = true;
   renderStatus.textContent = "Preparing your clip… processing starts now.";
+  captionChunks=[];
+  if(captionsToggle.checked){try{const audio=await getClipAudio(startTime,endTime);const asr=await getWhisper();renderStatus.textContent="Transcribing Hindi speech into Hinglish captions…";const result=await asr(audio,{sampling_rate:16000,language:"hindi",task:"transcribe",return_timestamps:true,chunk_length_s:20});captionChunks=(result.chunks||[]).map(c=>({start:Array.isArray(c.timestamp)?(c.timestamp[0]||0):0,end:Array.isArray(c.timestamp)?(c.timestamp[1]||0):0,text:romanizeHindi(c.text||"")})).filter(c=>c.text);if(!captionChunks.length&&result.text)captionChunks=[{start:0,end:endTime-startTime,text:romanizeHindi(result.text)}];}catch(e){renderStatus.textContent="Captions unavailable: "+(e.message||"model error")+". Continuing without captions.";captionChunks=[];}}
   const canvas = document.createElement("canvas");
   canvas.width = 540;
   canvas.height = 960;
@@ -137,6 +187,7 @@ renderBtn.addEventListener("click", async () => {
         }
       }
     }
+    const t=sourceVideo.currentTime-startTime;const cap=captionChunks.find(c=>t>=c.start&&t<=c.end);if(cap&&cap.text){ctx.font="bold 30px Arial";ctx.textAlign="center";ctx.lineWidth=7;ctx.strokeStyle="rgba(0,0,0,.9)";ctx.fillStyle="#fff";ctx.strokeText(cap.text.slice(0,42),W/2,H*.79);ctx.fillText(cap.text.slice(0,42),W/2,H*.79);}
     const creator=(document.getElementById("creator-name").value.trim() || "@yourchannel").slice(0,32);
     ctx.font="bold 20px Arial";ctx.textAlign="center";ctx.lineWidth=4;ctx.strokeStyle="rgba(0,0,0,.6)";
     ctx.strokeText(creator,W/2,38);ctx.fillStyle="#fff";ctx.fillText(creator,W/2,38);
@@ -172,7 +223,7 @@ renderBtn.addEventListener("click", async () => {
     const blob=new Blob(chunks,{type:mimeType});
     const outputUrl=URL.createObjectURL(blob);
     downloadLink.href=outputUrl;downloadLink.hidden=false;
-    renderStatus.textContent="Your vertical clip is ready. Download it below. Export format: WebM.";
+    renderStatus.textContent="Your vertical clip is ready. Download it below. Export format: WebM."+(captionsToggle.checked?(captionChunks.length?" Hinglish captions added.":" Captions unavailable for this file."):"");
   };
   try {
     sourceVideo.pause();
