@@ -1,0 +1,12 @@
+async function openDatabase(){return new Promise((resolve,reject)=>{const r=indexedDB.open("autoclip-ai",1);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}
+async function loadClips(){const db=await openDatabase();const clips=await new Promise((resolve,reject)=>{const r=db.transaction("jobs","readonly").objectStore("jobs").get("latest");r.onsuccess=()=>resolve(r.result||[]);r.onerror=()=>reject(r.error);});db.close();return clips;}
+const status=document.getElementById("approval-status"),grid=document.getElementById("clip-grid");
+(async()=>{try{const clips=await loadClips();if(!clips.length){status.textContent="No clips found. Return to the editor and create a batch.";return;}status.textContent=clips.length+" clips generated · Review and download your favourites.";
+clips.forEach((clip,i)=>{const url=URL.createObjectURL(clip.blob),card=document.createElement("article");card.className="clip-review-card";
+const heading=document.createElement("div");heading.className="clip-review-heading";const title=document.createElement("b");title.textContent="SHORT "+String(i+1).padStart(2,"0");const duration=document.createElement("span");duration.textContent=Math.round(clip.end-clip.start)+" sec · "+Math.floor(clip.start/60)+":"+String(Math.floor(clip.start%60)).padStart(2,"0");heading.append(title,duration);
+const video=document.createElement("video");video.controls=true;video.playsInline=true;video.preload="metadata";video.src=url;
+const meta=document.createElement("p");meta.className="clip-meta";meta.textContent=clip.captions?"Hinglish captions added":"Captions unavailable for this clip";
+const actions=document.createElement("div");actions.className="clip-actions";const approve=document.createElement("button");approve.className="approve-btn";approve.textContent="Approve";const download=document.createElement("a");download.className="download-clip-btn";download.href=url;download.download="autoclip-short-"+String(i+1).padStart(2,"0")+".webm";download.textContent="Download ↓";download.hidden=true;
+approve.addEventListener("click",()=>{approve.textContent="Approved ✓";approve.classList.add("approved");download.hidden=false;});actions.append(approve,download);card.append(heading,video,meta,actions);grid.append(card);});
+}catch(e){status.textContent="Could not load your clips. Return to the editor and try again.";console.error(e);}})();
+window.addEventListener("pagehide",()=>{document.querySelectorAll(".clip-review-card video").forEach(v=>{if(v.src.startsWith("blob:"))URL.revokeObjectURL(v.src);});});
