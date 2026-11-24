@@ -100,6 +100,7 @@ async function makeCaptions(buffer,start,end){
  }catch(error){console.warn("Caption generation unavailable",error);return [];}
 }
 function waitForSeek(video,time){
+ if(video.readyState>=2&&Math.abs(video.currentTime-time)<0.05)return Promise.resolve();
  return new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error("Video seek timed out")),15000);const done=()=>{clearTimeout(timer);video.removeEventListener("seeked",done);resolve();};video.addEventListener("seeked",done,{once:true});video.currentTime=time;});
 }
 async function renderOneClip(segment,index,total,buffer){
@@ -141,7 +142,7 @@ facecamInput.addEventListener("change",()=>{
 });
 fileInput.addEventListener("change",()=>{
  const file=fileInput.files&&fileInput.files[0];if(!file)return;
- if(videoObjectUrl)URL.revokeObjectURL(videoObjectUrl);videoObjectUrl=URL.createObjectURL(file);sourceVideo.src=videoObjectUrl;sourceVideo.style.display="block";document.getElementById("file-label").textContent=file.name;renderBtn.disabled=false;renderStatus.textContent="Recording loaded. Choose how many Shorts to generate.";sourceVideo.load();
+ if(videoObjectUrl)URL.revokeObjectURL(videoObjectUrl);videoObjectUrl=URL.createObjectURL(file);sourceVideo.src=videoObjectUrl;sourceVideo.style.display="block";document.getElementById("file-label").textContent=file.name;renderBtn.disabled=true;renderStatus.textContent="Loading video details…";sourceVideo.onloadedmetadata=()=>{renderBtn.disabled=false;renderStatus.textContent="Recording loaded. Choose how many Shorts to generate.";};sourceVideo.onerror=()=>{renderStatus.textContent="This video format could not be opened by Chrome. Try MP4 (H.264) or WebM.";};sourceVideo.load();
 });
 renderBtn.addEventListener("click",async()=>{
  const file=fileInput.files&&fileInput.files[0];if(!file){renderStatus.textContent="Choose your saved livestream video first.";return;}
