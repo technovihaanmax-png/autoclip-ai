@@ -67,7 +67,7 @@
       <div class="review-card"><div class="review-icon">▣</div><div><span class="review-label">VIDEO LAYOUT</span><b id="review-template">Facecam overlay</b></div></div>
       <div class="review-card"><div class="review-icon">Aa</div><div><span class="review-label">CAPTION STYLE</span><b id="review-caption">Bold pop · Hindi speech in Hinglish</b></div></div>
       <div class="review-card"><div class="review-icon">▶</div><div><span class="review-label">CREATOR LABEL</span><b id="review-creator">@yourchannel</b></div></div>
-      <div class="notice"><span>ⓘ</span><p>Browser-only mode: choose a saved video file you own or have permission to edit. The first batch engine finds high-energy moments from the audio and exports multiple vertical WebM clips. This is a first-pass detector, not semantic AI or face tracking. YouTube URLs cannot be downloaded directly by this static website.</p></div>
+      <div class="notice"><span>ⓘ</span><p>Browser-only mode: choose a saved video file you own or have permission to edit. The browser analyses audio for candidate moments, transcribes Hindi speech, adds captions and reframes faces when detected. Processing stays on this device. A saved video file is required; a YouTube URL alone cannot be imported by this static site.</p></div>
       <div class="local-editor">
         <div class="option-title"><div><b>Create multiple Shorts automatically</b><small>Choose the saved livestream recording. AUTOCLIP will find multiple moments.</small></div><span class="pill">ON-DEVICE</span></div>
         <label class="upload-zone" for="video-file"><span class="upload-symbol">↑</span><b id="file-label">Choose saved livestream video</b><small>MP4, WebM or MOV · processed in this browser</small><input id="video-file" type="file" accept="video/*"></label>
@@ -75,10 +75,10 @@
         <label class="upload-zone secondary-upload" for="facecam-file"><span class="upload-symbol">＋</span><b id="facecam-label">Add facecam video (optional)</b><small>Use a separate recording for reaction layouts</small><input id="facecam-file" type="file" accept="video/*"></label>
         <video id="facecam-video" playsinline muted></video>
         <p class="input-hint">Tip: start with a shorter recording to test your Chromebook. Processing starts only when you press Auto edit.</p>
-        <div class="trim-row"><label>Start (sec)<input id="clip-start" type="number" min="0" step="0.5" value="0"></label><label>End (sec)<input id="clip-end" type="number" min="0.5" step="0.5" value="15"></label></div>
+        
         <label class="clip-count-label">Number of Shorts<select id="clip-count"><option value="5">5 clips</option><option value="8" selected>8 clips</option><option value="10">10 clips</option><option value="12">12 clips</option><option value="15">15 clips</option></select></label>
-        <label class="caption-toggle"><input id="hinglish-captions" type="checkbox" checked><span><b>Hinglish auto captions</b><small>Free on-device Hindi speech model · first use downloads it</small></span></label>
-        <button class="primary-btn full-btn" id="render-btn" disabled>Find moments & create Shorts <span>↗</span></button>
+        <label class="caption-toggle"><input id="hinglish-captions" type="checkbox" checked><span><b>Hinglish auto captions</b><small>Hindi speech is transcribed locally and shown in Roman letters</small></span></label>\n        <label class="caption-toggle"><input id="face-tracking" type="checkbox" checked><span><b>Automatic face tracking</b><small>Find a visible face and keep it inside the vertical frame · beta</small></span></label>\n        <label class="caption-toggle"><input id="action-zoom" type="checkbox" checked><span><b>Smart action zoom</b><small>Subtle zoom changes around louder moments</small></span></label>
+        <button class="primary-btn full-btn" id="render-btn" disabled>Auto edit my Shorts <span>↗</span></button>
         <p class="input-hint" id="render-status">Upload the saved recording to begin.</p>
         <a id="download-clip" class="download-link" hidden download="autoclip-short.webm">Download your clip ↓</a>
       </div>
