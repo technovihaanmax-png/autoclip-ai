@@ -22,11 +22,11 @@
       <div class="hero">
         <div class="eyebrow"><span class="sparkle">✦</span> YOUR VIDEO. REIMAGINED.</div>
         <h1>Long videos.<br><span class="gradient-text">Short-form magic.</span></h1>
-        <p class="hero-copy">Turn your best moments into scroll-stopping vertical clips. Drop a YouTube link to get started.</p>
+        <p class="hero-copy">Turn your best moments into scroll-stopping vertical clips. Analyse a saved livestream recording and turn it into multiple Shorts.</p>
         <div class="url-card">
-          <div class="url-label"><span class="youtube-icon">▶</span><span>YOUTUBE VIDEO URL</span></div>
-          <div class="url-entry"><input id="youtube-url" type="url" placeholder="Paste your YouTube link here…" autocomplete="url" /><button id="continue-btn" class="primary-btn">Continue <span>→</span></button></div>
-          <p class="input-hint" id="url-hint">Example: https://youtube.com/watch?v=…</p>
+          <div class="url-label"><span class="youtube-icon">▶</span><span>OPTIONAL YOUTUBE SOURCE LINK</span></div>
+          <div class="url-entry"><input id="youtube-url" type="url" placeholder="Optional: paste the saved livestream link…" autocomplete="url" /><button id="continue-btn" class="primary-btn">Continue <span>→</span></button></div>
+          <p class="input-hint" id="url-hint">You will still need to select the saved video file below.</p>
         </div>
         <div class="trust-row"><span>✦</span> Smart moments <i></i> Vertical-ready <i></i> Creator-first editing</div>
       </div>
@@ -62,24 +62,24 @@
     </section>
 
     <section class="screen" id="review-screen">
-      <div class="section-heading"><button class="back-btn" id="templates-back-btn">←</button><div><div class="eyebrow">STEP 03 · READY TO CREATE</div><h2>Your clip, <span class="gradient-text">your style.</span></h2><p>Check your choices before we build the editing engine.</p></div></div>
+      <div class="section-heading"><button class="back-btn" id="templates-back-btn">←</button><div><div class="eyebrow">STEP 03 · READY TO CREATE</div><h2>Your clip, <span class="gradient-text">your style.</span></h2><p>Set your clip preferences, then let AUTOCLIP analyse the recording.</p></div></div>
       <div class="review-card"><div class="review-icon">✦</div><div><span class="review-label">SOURCE VIDEO</span><b id="review-url">Your YouTube link</b></div></div>
       <div class="review-card"><div class="review-icon">▣</div><div><span class="review-label">VIDEO LAYOUT</span><b id="review-template">Facecam overlay</b></div></div>
       <div class="review-card"><div class="review-icon">Aa</div><div><span class="review-label">CAPTION STYLE</span><b id="review-caption">Bold pop · Hindi speech in Hinglish</b></div></div>
       <div class="review-card"><div class="review-icon">▶</div><div><span class="review-label">CREATOR LABEL</span><b id="review-creator">@yourchannel</b></div></div>
-      <div class="notice"><span>ⓘ</span><p>Browser-only mode: choose a video file you own or have permission to edit. Your video stays on your device. This first engine exports a selected segment as a vertical WebM clip; automatic AI highlights, face tracking and Hinglish transcription are future stages.</p></div>
+      <div class="notice"><span>ⓘ</span><p>Browser-only mode: choose a saved video file you own or have permission to edit. The first batch engine finds high-energy moments from the audio and exports multiple vertical WebM clips. This is a first-pass detector, not semantic AI or face tracking. YouTube URLs cannot be downloaded directly by this static website.</p></div>
       <div class="local-editor">
-        <div class="option-title"><div><b>Try the browser editor</b><small>Choose a local video to create your first vertical clip.</small></div><span class="pill">ON-DEVICE</span></div>
-        <label class="upload-zone" for="video-file"><span class="upload-symbol">↑</span><b id="file-label">Choose a video file</b><small>MP4, WebM or MOV · processed in this browser</small><input id="video-file" type="file" accept="video/*"></label>
+        <div class="option-title"><div><b>Create multiple Shorts automatically</b><small>Choose the saved livestream recording. AUTOCLIP will find multiple moments.</small></div><span class="pill">ON-DEVICE</span></div>
+        <label class="upload-zone" for="video-file"><span class="upload-symbol">↑</span><b id="file-label">Choose saved livestream video</b><small>MP4, WebM or MOV · processed in this browser</small><input id="video-file" type="file" accept="video/*"></label>
         <video id="source-video" playsinline controls></video>
         <label class="upload-zone secondary-upload" for="facecam-file"><span class="upload-symbol">＋</span><b id="facecam-label">Add facecam video (optional)</b><small>Use a separate recording for reaction layouts</small><input id="facecam-file" type="file" accept="video/*"></label>
         <video id="facecam-video" playsinline muted></video>
-        <p class="input-hint">Tip: use a short clip first. Processing starts only when you press Create.</p>
+        <p class="input-hint">Tip: start with a shorter recording to test your Chromebook. Processing starts only when you press Auto edit.</p>
         <div class="trim-row"><label>Start (sec)<input id="clip-start" type="number" min="0" step="0.5" value="0"></label><label>End (sec)<input id="clip-end" type="number" min="0.5" step="0.5" value="15"></label></div>
-        <button class="secondary-auto-btn" id="auto-find-btn" type="button" disabled>✦ Auto find best moment</button>
-        <label class="caption-toggle"><input id="hinglish-captions" type="checkbox" checked><span><b>Hinglish auto captions</b><small>Free on-device speech model · first use downloads it</small></span></label>
-        <button class="primary-btn full-btn" id="render-btn" disabled>Auto edit & create Short <span>↗</span></button>
-        <p class="input-hint" id="render-status">Upload a video to enable the editor.</p>
+        <label class="clip-count-label">Number of Shorts<select id="clip-count"><option value="5">5 clips</option><option value="8" selected>8 clips</option><option value="10">10 clips</option><option value="12">12 clips</option><option value="15">15 clips</option></select></label>
+        <label class="caption-toggle"><input id="hinglish-captions" type="checkbox" checked><span><b>Hinglish auto captions</b><small>Free on-device Hindi speech model · first use downloads it</small></span></label>
+        <button class="primary-btn full-btn" id="render-btn" disabled>Find moments & create Shorts <span>↗</span></button>
+        <p class="input-hint" id="render-status">Upload the saved recording to begin.</p>
         <a id="download-clip" class="download-link" hidden download="autoclip-short.webm">Download your clip ↓</a>
       </div>
     </section>
