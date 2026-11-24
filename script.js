@@ -125,6 +125,7 @@ fileInput.addEventListener("change", () => {
   document.getElementById("file-label").textContent = file.name;
   downloadLink.hidden = true;
   renderBtn.disabled = false;
+  autoFindBtn.disabled = false;
   renderStatus.textContent = "Video loaded locally. Set the start and end time, then create your clip.";
   sourceVideo.onloadedmetadata = () => {
     document.getElementById("clip-start").value = "0";
