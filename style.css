@@ -3,3 +3,27 @@
 #facecam-video{display:none}.secondary-upload{min-height:86px;margin-top:10px}.primary-btn:disabled{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}.local-editor video{max-width:100%}
 
 .secondary-auto-btn{width:100%;height:43px;margin-top:13px;border:1px solid #d8c7ee;border-radius:11px;background:#faf7ff;color:#7950b8;font:700 12px inherit;cursor:pointer}.secondary-auto-btn:disabled{opacity:.55;cursor:wait}.caption-toggle{display:flex;align-items:center;gap:11px;margin:13px 2px 5px;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}.caption-toggle input{accent-color:#8b5cf6;width:16px;height:16px}.caption-toggle span{display:flex;flex-direction:column;gap:4px}.caption-toggle b{font-size:11px}.caption-toggle small{font-size:9px;color:#92909a}
+
+/* Batch clip review */
+.clip-count-label{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:14px 0;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff;font-size:11px;font-weight:700;color:#696575}
+.clip-count-label select{border:1px solid var(--line);border-radius:9px;background:#faf9fc;padding:9px 12px;color:var(--ink);font:600 12px inherit}
+.approval-main{max-width:1120px;margin:0 auto;padding:50px 30px 80px}
+.approval-title{font-size:clamp(38px,5vw,58px);letter-spacing:-2.5px;margin:12px 0}
+.approval-copy{color:var(--muted);font-size:14px;margin:0 0 22px}
+.approval-status{padding:14px 17px;background:#fff;border:1px solid var(--line);border-radius:13px;color:#786b8d;font-size:12px;margin-bottom:20px}
+.clip-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:17px}
+.clip-review-card{padding:12px;border:1px solid #fff;border-radius:18px;background:rgba(255,255,255,.82);box-shadow:0 10px 35px rgba(37,29,55,.06);min-width:0}
+.clip-review-heading{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:2px 2px 10px}
+.clip-review-heading b{font-size:11px;letter-spacing:1px}.clip-review-heading span{font-size:10px;color:#8b8793}
+.clip-review-card video{width:100%;aspect-ratio:9/16;max-height:440px;object-fit:contain;background:#111;border-radius:12px;display:block}
+.clip-meta{font-size:10px;color:#8a8592;margin:10px 2px}
+.clip-actions{display:flex;gap:8px}
+.approve-btn,.download-clip-btn{flex:1;display:grid;place-items:center;min-height:40px;border-radius:10px;border:1px solid #d8c9ec;background:#faf7ff;color:#7950b8;font:700 11px inherit;text-decoration:none;cursor:pointer}
+.approve-btn.approved{background:#eef9f2;border-color:#bce4ca;color:#267c4a}
+.download-clip-btn{background:linear-gradient(110deg,#8755e4,#b66cdd);color:white;border:0}
+.download-clip-btn[hidden]{display:none}
+.approval-footer{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-top:28px}
+.back-link{color:#8053c5;text-decoration:none;font-size:12px;font-weight:800}
+.approval-footer p{font-size:10px;color:#9995a1}
+@media(max-width:720px){.approval-main{padding:28px 18px 55px}.approval-footer{align-items:flex-start;flex-direction:column}.clip-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.clip-review-card{padding:8px}}
+@media(max-width:430px){.clip-grid{grid-template-columns:1fr}.clip-review-card video{max-height:520px}}
