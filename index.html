@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f5f5f7" />
+  <title>AUTOCLIP AI — Make every moment a Short</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="AUTOCLIP AI home"><span class="brand-mark"><span></span><span></span><span></span></span><span>AUTOCLIP <b>AI</b></span></a>
+    <div class="top-right"><span class="status-dot"></span><span>Studio preview</span><div class="avatar">A</div></div>
+  </header>
+
+  <main>
+    <section class="screen active" id="welcome-screen">
+      <div class="hero">
+        <div class="eyebrow"><span class="sparkle">✦</span> YOUR VIDEO. REIMAGINED.</div>
+        <h1>Long videos.<br><span class="gradient-text">Short-form magic.</span></h1>
+        <p class="hero-copy">Turn your best moments into scroll-stopping vertical clips. Drop a YouTube link to get started.</p>
+        <div class="url-card">
+          <div class="url-label"><span class="youtube-icon">▶</span><span>YOUTUBE VIDEO URL</span></div>
+          <div class="url-entry"><input id="youtube-url" type="url" placeholder="Paste your YouTube link here…" autocomplete="url" /><button id="continue-btn" class="primary-btn">Continue <span>→</span></button></div>
+          <p class="input-hint" id="url-hint">Example: https://youtube.com/watch?v=…</p>
+        </div>
+        <div class="trust-row"><span>✦</span> Smart moments <i></i> Vertical-ready <i></i> Creator-first editing</div>
+      </div>
+      <div class="preview-strip">
+        <div class="preview-card preview-main"><div class="fake-video"><div class="fake-sun"></div><div class="fake-hill"></div><div class="play-orb">▶</div><div class="fake-caption">THAT WAS UNEXPECTED.</div></div><div class="preview-meta"><span>SMART MOMENT DETECTED</span><b>01:24 – 01:56</b></div></div>
+        <div class="preview-card preview-side"><div class="mini-stack"><div class="mini-face">CAM</div><div class="mini-game">GAMEPLAY</div></div><div class="preview-meta"><span>VERTICAL FORMAT</span><b>9:16 ready</b></div></div>
+      </div>
+    </section>
+
+    <section class="screen" id="templates-screen">
+      <div class="section-heading"><button class="back-btn" id="back-btn">←</button><div><div class="eyebrow">STEP 02 · YOUR LOOK</div><h2>Choose your <span class="gradient-text">template.</span></h2><p>Pick how your gameplay and facecam should appear.</p></div></div>
+      <div class="template-grid">
+        <button class="template-card selected" data-template="overlay">
+          <div class="template-preview layout-overlay"><div class="mock-game"><span class="mock-sky"></span><span class="mock-ground"></span><span class="mock-person"></span><span class="mock-subtitle">That was close!</span></div><span class="mock-face face-right">FACE</span></div>
+          <div class="template-info"><span class="template-number">01</span><span><b>Facecam overlay</b><small>Gameplay full screen · Facecam bottom-right</small></span><span class="select-check">✓</span></div>
+        </button>
+        <button class="template-card" data-template="stacked">
+          <div class="template-preview layout-stacked"><div class="mock-game"><span class="mock-sky"></span><span class="mock-ground"></span><span class="mock-person"></span></div><div class="mock-face wide-face">FACECAM</div></div>
+          <div class="template-info"><span class="template-number">02</span><span><b>Stacked reaction</b><small>Gameplay top · Facecam bottom</small></span><span class="select-check">✓</span></div>
+        </button>
+        <button class="template-card" data-template="corner-left">
+          <div class="template-preview layout-corner"><div class="mock-game"><span class="mock-sky"></span><span class="mock-ground"></span><span class="mock-person"></span><span class="mock-subtitle">No way!</span></div><span class="mock-face face-left">FACE</span></div>
+          <div class="template-info"><span class="template-number">03</span><span><b>Corner reaction</b><small>Gameplay full screen · Facecam bottom-left</small></span><span class="select-check">✓</span></div>
+        </button>
+      </div>
+      <div class="options-panel">
+        <div class="option-block"><div class="option-title"><div><b>Caption style</b><small>Choose the look of your subtitles.</small></div><span class="pill">HINGLISH READY</span></div>
+          <div class="caption-options"><button class="caption-choice active" data-caption="bold"> <b class="sample-bold">Aa</b><span>Bold pop</span></button><button class="caption-choice" data-caption="clean"><b class="sample-clean">Aa</b><span>Clean</span></button><button class="caption-choice" data-caption="highlight"><b class="sample-highlight">Aa</b><span>Word highlight</span></button></div>
+        </div>
+        <div class="option-block creator-block"><div class="option-title"><div><b>Creator name</b><small>We'll show this in a small label at the top of your clips.</small></div></div><input id="creator-name" class="creator-input" type="text" placeholder="@yourchannel" maxlength="32" /></div>
+      </div>
+      <div class="bottom-actions"><span class="selection-note"><span class="status-dot"></span> Template selected · 9:16 vertical</span><button id="review-btn" class="primary-btn">Continue <span>→</span></button></div>
+    </section>
+
+    <section class="screen" id="review-screen">
+      <div class="section-heading"><button class="back-btn" id="templates-back-btn">←</button><div><div class="eyebrow">STEP 03 · READY TO CREATE</div><h2>Your clip, <span class="gradient-text">your style.</span></h2><p>Check your choices before we build the editing engine.</p></div></div>
+      <div class="review-card"><div class="review-icon">✦</div><div><span class="review-label">SOURCE VIDEO</span><b id="review-url">Your YouTube link</b></div></div>
+      <div class="review-card"><div class="review-icon">▣</div><div><span class="review-label">VIDEO LAYOUT</span><b id="review-template">Facecam overlay</b></div></div>
+      <div class="review-card"><div class="review-icon">Aa</div><div><span class="review-label">CAPTION STYLE</span><b id="review-caption">Bold pop · Hindi speech in Hinglish</b></div></div>
+      <div class="review-card"><div class="review-icon">▶</div><div><span class="review-label">CREATOR LABEL</span><b id="review-creator">@yourchannel</b></div></div>
+      <div class="notice"><span>ⓘ</span><p>This is the first website preview. YouTube importing, AI moment detection, face tracking, Hinglish transcription and video export will be connected in the next development stage.</p></div>
+      <button class="primary-btn full-btn" id="finish-btn">Looks good <span>✓</span></button>
+    </section>
+  </main>
+  <footer><span>© 2026 AUTOCLIP AI</span><span>MADE FOR CREATORS <b>✦</b></span></footer>
+  <script src="script.js"></script>
+</body>
+</html>
