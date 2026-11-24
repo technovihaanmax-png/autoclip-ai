@@ -31,7 +31,9 @@ document.getElementById("review-btn").addEventListener("click",()=>{
 const fileInput=document.getElementById("video-file"),sourceVideo=document.getElementById("source-video");
 const renderBtn=document.getElementById("render-btn"),renderStatus=document.getElementById("render-status");
 const facecamInput=document.getElementById("facecam-file"),facecamVideo=document.getElementById("facecam-video");
-const captionsToggle=document.getElementById("hinglish-captions");\nconst faceTrackingToggle=document.getElementById("face-tracking"),actionZoomToggle=document.getElementById("action-zoom");\nlet videoObjectUrl=null,facecamObjectUrl=null,whisperPipeline=null,faceDetector=null,energyProfile=null;
+const captionsToggle=document.getElementById("hinglish-captions");
+const faceTrackingToggle=document.getElementById("face-tracking"),actionZoomToggle=document.getElementById("action-zoom");
+let videoObjectUrl=null,facecamObjectUrl=null,whisperPipeline=null,faceDetector=null,energyProfile=null;
 function romanizeHindi(input){
  const map={"अ":"a","आ":"aa","इ":"i","ई":"ee","उ":"u","ऊ":"oo","ए":"e","ऐ":"ai","ओ":"o","औ":"au","क":"k","ख":"kh","ग":"g","घ":"gh","च":"ch","छ":"chh","ज":"j","झ":"jh","ट":"t","ठ":"th","ड":"d","ढ":"dh","ण":"n","त":"t","थ":"th","द":"d","ध":"dh","न":"n","प":"p","फ":"ph","ब":"b","भ":"bh","म":"m","य":"y","र":"r","ल":"l","व":"v","श":"sh","ष":"sh","स":"s","ह":"h","ा":"aa","ि":"i","ी":"ee","ु":"u","ू":"oo","े":"e","ै":"ai","ो":"o","ौ":"au","ं":"n","ँ":"n","्":"","़":""};
  const consonants=new Set("कखगघचछजझटठडढणतथदधनपफबभमयरलवशषसह");
@@ -129,13 +131,13 @@ function zoomAtTime(time){
  return 1+clamp((rms-lo)/Math.max(.0001,hi-lo),0,1)*.13;
 }
 function generatedTitle(captions){
- const words=(captions||[]).map(c=>c.text).join(" ").replace(/[^\\p{L}\\p{N}\\s]/gu," ").split(/\\s+/).filter(w=>w.length>2);
+ const words=(captions||[]).map(c=>c.text).join(" ").replace(/[^\p{L}\p{N}\s]/gu," ").split(/\s+/).filter(w=>w.length>2);
  if(!words.length)return "THE MOMENT YOU MISSED";
  const phrase=words.slice(0,7).join(" ").trim();
  return phrase.length>42?phrase.slice(0,39).trim()+"…":phrase.toUpperCase();
 }
 function drawWrappedText(ctx,text,x,y,maxWidth,lineHeight){
- const words=String(text||"").split(/\\s+/);let line="",lines=[];
+ const words=String(text||"").split(/\s+/);let line="",lines=[];
  for(const word of words){const test=line?line+" "+word:word;if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=word;}else line=test;}
  if(line)lines.push(line);lines.slice(0,2).forEach((row,i)=>{ctx.strokeText(row,x,y+i*lineHeight);ctx.fillText(row,x,y+i*lineHeight);});
 }
@@ -200,7 +202,10 @@ renderBtn.addEventListener("click",async()=>{
  try{
   renderStatus.textContent="Analysing the recording audio…";
   const buffer=await decodeAudio(file),count=Number(document.getElementById("clip-count").value)||8;
-  const energy=buildEnergy(buffer);\n  const sorted=[...energy.values].sort((a,b)=>a-b);energy.p20=sorted[Math.floor(sorted.length*.2)]||0;energy.p90=sorted[Math.floor(sorted.length*.9)]||1;energyProfile=energy;\n  await prepareFaceDetector();\n  const moments=chooseMoments(energy,count,sourceVideo.duration);
+  const energy=buildEnergy(buffer);
+  const sorted=[...energy.values].sort((a,b)=>a-b);energy.p20=sorted[Math.floor(sorted.length*.2)]||0;energy.p90=sorted[Math.floor(sorted.length*.9)]||1;energyProfile=energy;
+  await prepareFaceDetector();
+  const moments=chooseMoments(energy,count,sourceVideo.duration);
   if(!moments.length)throw new Error("No suitable moments found. Try a longer recording.");
   const outputs=[];
   for(let i=0;i<moments.length;i++){outputs.push(await renderOneClip(moments[i],i,moments.length,buffer));}
